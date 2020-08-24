@@ -49,5 +49,16 @@ function filter({error: err, $, response: res, body}) {
 
         return [p.key, Object.fromEntries(props)];
     };
-    return Object.fromEntries([og, fb, tw].map(mapper));
+    const ogmerged = Object.fromEntries([og, fb, tw].map(mapper));
+
+    const title = $('title').text();
+    const metadesc = $('meta[name="description"]').attr('content');
+    const metakeywords = $('meta[name="keywords"]').attr('content');
+    const metas = {
+        title: title,
+        description: metadesc,
+        keywords: metakeywords
+    };
+    
+    return Object.assign({}, ogmerged, metas);
 }
