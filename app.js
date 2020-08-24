@@ -23,7 +23,7 @@ function parseArgs(args) {
 }
 
 async function scrape(args) {
-    cli.setBrowser('chrome');
+    cli.set('browser', 'chrome');
     const ats = await cli.fetch(args.uri)
         .then(filter)
         .catch(console.error);
