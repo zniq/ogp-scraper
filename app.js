@@ -1,4 +1,5 @@
-const cli = require('cheerio-httpcli');
+const cheerio = require('cheerio');
+const fetch = require('node-fetch');
 
 async function main(argv) {
     const args = parseArgs(argv.slice(2));
@@ -23,19 +24,16 @@ function parseArgs(args) {
 }
 
 async function scrape(args) {
-    cli.set('browser', 'chrome');
-    const ats = await cli.fetch(args.uri)
+    const ats = await fetch(args.uri)
         .then(filter)
         .catch(console.error);
-
     return ats;
 }
 
-function filter({error: err, $, response: res, body}) {
-    if (err) {
-        console.error("fetch error: ", err);
-        return null;
-    }
+async function filter(res) {
+    const body = await res.text();
+    const $ = cheerio.load(body);
+
     const og = {key: 'og', selector: `meta[property^="og:"]`};
     const fb = {key: 'facebook', selector: `meta[property^="fb:"]`};
     const tw = {key: 'twitter', selector: `meta[property^="twitter:"]`};
